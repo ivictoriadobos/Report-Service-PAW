@@ -1,4 +1,8 @@
 package paw.report.service.infrastructure.mongorepository;
 
-public class MongoReportRepo {
+import org.springframework.data.mongodb.repository.MongoRepository;
+import paw.report.service.infrastructure.entity.ReportEntity;
+
+public interface MongoReportRepo extends MongoRepository<ReportEntity, String> {
+
 }
