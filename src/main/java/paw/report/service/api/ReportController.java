@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import paw.report.service.api.data.ReportData;
 import paw.report.service.api.requests.ReportListingRequest;
+import paw.report.service.api.responses.GetReportsResponse;
 import paw.report.service.domain.exception.InvalidReportException;
 import paw.report.service.domain.model.Report;
 import paw.report.service.domain.model.ReportReason;
@@ -25,9 +26,18 @@ public class ReportController {
     @Autowired
     private IReportService reportService;
 
+    @GetMapping(value = "/reports/{listingId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GetReportsResponse> getAllReportsForListingId(@PathVariable(name = "listingId",required = true) long listingId)
+    {
+        try
+        {
+            List<ReportData> toBeReturned = reportService.getAllReports().stream().map(ReportData::new).collect(Collectors.toList());
+
+        }
+    }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Record created successfully"),
+            @ApiResponse(responseCode = "201", description = "Report created successfully"),
             @ApiResponse(responseCode = "400", description = "One or more fields are not valid"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
@@ -37,7 +47,7 @@ public class ReportController {
     {
         try {
 
-            Report toBeCreated = new Report(null, listingId, ReportReason.valueOf(request.getReason()), null, request.getDescription() );
+            Report toBeCreated = new Report(null, listingId, ReportReason.fromString(request.getReason()), null, request.getDescription() );
 
             ReportData response = new ReportData(reportService.reportListing(toBeCreated));
 
@@ -45,26 +55,33 @@ public class ReportController {
         }
 
         catch (InvalidReportException exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid reason set");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more fields are not valid");
         }
 
         catch (Exception e)
         {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
         }
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reports fetched successfully"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/reports", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetReportsResponse> getAllReports()
     {
         try{
 
             List<ReportData> toBeReturned = reportService.getAllReports().stream().map(ReportData::new).collect(Collectors.toList());
+
             return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server erorr");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server pl erorr");
         }
     }
 

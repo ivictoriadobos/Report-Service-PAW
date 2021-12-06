@@ -3,14 +3,13 @@ package paw.report.service.domain.model;
 import java.util.UUID;
 
 public class Report {
-    private UUID reportId;
-    private long listingId;
-    private ReportReason reason;
-    private String timestamp;
-    private String description;
+    private final String reportId;
+    private final long listingId;
+    private final ReportReason reason;
+    private final String timestamp;
+    private final String description;
 
-    public Report(UUID reportId, long listingId, ReportReason reason, String timestamp, String description)
-    {
+    public Report(String reportId, long listingId, ReportReason reason, String timestamp, String description) {
         this.reportId = reportId;
         this.listingId = listingId;
         this.reason = reason;
@@ -18,28 +17,23 @@ public class Report {
         this.description = description;
     }
 
-    public UUID getReportId()
-    {
+    public String getReportId() {
         return reportId;
     }
 
-    public long getListingId()
-    {
+    public long getListingId() {
         return listingId;
     }
 
-    public ReportReason getReason()
-    {
+    public ReportReason getReason() {
         return reason;
     }
 
-    public String getTimestamp()
-    {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 

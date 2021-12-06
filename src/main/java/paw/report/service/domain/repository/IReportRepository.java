@@ -8,4 +8,5 @@ public interface IReportRepository {
 
     public Report create(Report report);
     public List<Report> getAll();
+    public List<Report> getAllByListingId(long listingId);
 }

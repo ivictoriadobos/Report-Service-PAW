@@ -21,7 +21,7 @@ public enum ReportReason {
         return reasonValueString;
     }
 
-    public ReportReason fromString(String reasonString) {
+    public static ReportReason fromString(String reasonString) {
         Optional<ReportReason> reason = Arrays
                 .stream(ReportReason.values())
                 .filter(value -> value.name().equalsIgnoreCase(reasonString))

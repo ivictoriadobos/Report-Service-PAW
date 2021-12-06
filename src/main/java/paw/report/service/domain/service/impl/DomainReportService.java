@@ -1,5 +1,6 @@
 package paw.report.service.domain.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import paw.report.service.domain.exception.InvalidReportException;
 import paw.report.service.domain.model.Report;
 import paw.report.service.domain.model.ReportReason;
@@ -9,17 +10,20 @@ import paw.report.service.domain.service.IReportService;
 import java.util.List;
 
 public class DomainReportService implements IReportService {
+
+    @Autowired
     private IReportRepository reportRepository;
 
 
     @Override
     public List<Report> getAllReports() {
-        return null;
+
+        return reportRepository.getAll();
     }
 
     @Override
     public List<Report> getAllByListingId(long listingId) {
-        return null;
+        return reportRepository.
     }
 
     @Override
@@ -41,7 +45,7 @@ public class DomainReportService implements IReportService {
     public Report reportListing(Report report) throws InvalidReportException {
         if(report.isValid())
         {
-            return null;
+            return reportRepository.create(report);
         }
 
         throw new InvalidReportException();

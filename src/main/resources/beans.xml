@@ -11,12 +11,12 @@
     </bean>
 
 <!--    <mongo:mongo-client id="mongoClient" host="localhost" />-->
-<!--    <mongo:db-factory id="mongoDbFactory" dbname="test" mongo-client-ref="mongoClient" />-->
+<!--    <mongo:db-factory id="mongoDbFactory" dbname="reports" mongo-client-ref="mongoClient" />-->
 
 <!--    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">-->
 <!--        <constructor-arg ref="mongoDbFactory"/>-->
 <!--    </bean>-->
 
-<!--    <bean class=-->
-<!--                  "org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>-->
+    <bean class=
+                  "org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 </beans>

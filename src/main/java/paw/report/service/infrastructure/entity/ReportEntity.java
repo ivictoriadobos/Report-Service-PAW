@@ -1,6 +1,6 @@
 package paw.report.service.infrastructure.entity;
 
-import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
@@ -9,7 +9,7 @@ import java.util.UUID;
 public class ReportEntity {
 
     @Id
-    private UUID id;
+    private String id;
 
     private long listingId;
 
@@ -19,7 +19,7 @@ public class ReportEntity {
 
     private String description;
 
-    public ReportEntity(UUID id, long listingId, String reason, String timestamp, String description) {
+    public ReportEntity(String id, long listingId, String reason, String timestamp, String description) {
         this.id = id;
         this.listingId = listingId;
         this.reason = reason;
@@ -27,7 +27,7 @@ public class ReportEntity {
         this.description = description;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
