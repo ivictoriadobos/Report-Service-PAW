@@ -19,12 +19,17 @@ public class ReportEntityMapper {
 
     public static Report toDomainModel(ReportEntity reportEntity)
     {
-        return new Report(reportEntity.getId(), reportEntity.getListingId(), ReportReason.valueOf(reportEntity.getReason()), reportEntity.getTimestamp(), reportEntity.getDescription());
+        return new Report(reportEntity.id.toString(), reportEntity.getListingId(), ReportReason.valueOf(reportEntity.getReason()), reportEntity.getTimestamp(), reportEntity.getDescription());
     }
 
     public static ReportEntity fromDomainModel(Report report)
     {
-        return new ReportEntity(null, report.getListingId(), report.getReason().name(), report.getTimestamp(), report.getDescription());
+        ReportEntity result = new ReportEntity();
+        result.setListingId(report.getListingId());
+        result.setReason(report.getReason().name());
+        result.setTimestamp(report.getTimestamp());
+        result.setDescription(report.getDescription());
+        return result;
     }
 
     public static List<ReportEntity> fromDomainModel(List<Report> reports)

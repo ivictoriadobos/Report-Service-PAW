@@ -1,6 +1,7 @@
 package paw.report.service.domain.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import paw.report.service.domain.exception.InvalidParameteresException;
 import paw.report.service.domain.exception.InvalidReportException;
 import paw.report.service.domain.model.Report;
 import paw.report.service.domain.model.ReportReason;
@@ -23,7 +24,8 @@ public class DomainReportService implements IReportService {
 
     @Override
     public List<Report> getAllByListingId(long listingId) {
-        return reportRepository.
+        // should return 404 when listingId not found as a collection in repo
+        return reportRepository.getAllByListingId(listingId);
     }
 
     @Override
@@ -32,13 +34,18 @@ public class DomainReportService implements IReportService {
     }
 
     @Override
-    public List<Report> getALlReportsFromDay(String timestamp) {
-        return null;
+    public List<Report> getALlReportsFromTimestamp(String timestamp) {
+        return reportRepository.getAllFromTimestamp(timestamp);
     }
 
     @Override
-    public List<Report> getAllByListingIdAndReason(long listingId, ReportReason reason) {
-        return null;
+    public List<Report> getAllByListingIdAndReason(long listingId, ReportReason reason) throws InvalidParameteresException {
+        if (reason != ReportReason.UNKNOWN)
+        {
+            return reportRepository.getAllByListingIdAndReason(listingId, reason);
+        }
+
+        else throw new InvalidParameteresException();
     }
 
     @Override
@@ -49,6 +56,16 @@ public class DomainReportService implements IReportService {
         }
 
         throw new InvalidReportException();
+    }
+
+    @Override
+    public List<Report> getAllReportsByReasonAndDay(ReportReason reason, String date) throws InvalidParameteresException {
+        if(reason !=  ReportReason.UNKNOWN)
+        {
+            return reportRepository.getAllByReasonAndDate(reason, date);
+        }
+
+        else throw new InvalidParameteresException();
     }
 
     @Override

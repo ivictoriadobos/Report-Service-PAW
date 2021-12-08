@@ -1,5 +1,9 @@
 package paw.report.service.infrastructure.entity;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,28 +12,30 @@ import java.util.UUID;
 @Document
 public class ReportEntity {
 
-    @Id
-    private String id;
+    @BsonProperty("_id")
+    @BsonId
+    public ObjectId id;
 
-    private long listingId;
+    public long listingId;
 
-    private String reason;
+    public String reason;
 
-    private String timestamp;
+    public String timestamp;
 
-    private String description;
+    public String description;
 
-    public ReportEntity(String id, long listingId, String reason, String timestamp, String description) {
-        this.id = id;
-        this.listingId = listingId;
-        this.reason = reason;
-        this.timestamp = timestamp;
-        this.description = description;
-    }
-
-    public String getId() {
-        return id;
-    }
+//    @BsonCreator
+//    public ReportEntity(@BsonId String id,
+//                        @BsonProperty("listingId") long listingId,
+//                        @BsonProperty("reason") String reason,
+//                        @BsonProperty("timestamp") String timestamp,
+//                        @BsonProperty("description") String description) {
+//        this.id = id;
+//        this.listingId = listingId;
+//        this.reason = reason;
+//        this.timestamp = timestamp;
+//        this.description = description;
+//    }
 
     public long getListingId() {
         return listingId;
@@ -45,6 +51,22 @@ public class ReportEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setListingId(long listingId) {
+        this.listingId = listingId;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

@@ -12,12 +12,14 @@ import org.springframework.web.server.ResponseStatusException;
 import paw.report.service.api.data.ReportData;
 import paw.report.service.api.requests.ReportListingRequest;
 import paw.report.service.api.responses.GetReportsResponse;
+import paw.report.service.domain.exception.InvalidParameteresException;
 import paw.report.service.domain.exception.InvalidReportException;
 import paw.report.service.domain.model.Report;
 import paw.report.service.domain.model.ReportReason;
 import paw.report.service.domain.service.IReportService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,12 +29,33 @@ public class ReportController {
     private IReportService reportService;
 
     @GetMapping(value = "/reports/{listingId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetReportsResponse> getAllReportsForListingId(@PathVariable(name = "listingId",required = true) long listingId)
+    public ResponseEntity<GetReportsResponse> getAllReportsForListingId(@PathVariable(name = "listingId",required = true) long listingId, @RequestParam Map<String, String> allParams)
     {
         try
         {
-            List<ReportData> toBeReturned = reportService.getAllReports().stream().map(ReportData::new).collect(Collectors.toList());
+            if (allParams.isEmpty())
+            {
+                List<ReportData> toBeReturned = reportService.getAllByListingId(listingId).stream().map(ReportData::new).collect(Collectors.toList());
 
+                return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+            }
+
+            if (allParams.containsKey("reason"))
+            {
+                List<ReportData> toBeReturned = reportService.getAllByListingIdAndReason(listingId, ReportReason.fromString(allParams.get("reason"))).stream().map(ReportData::new).collect(Collectors.toList());
+                return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+
+            }
+            return null;
+        }
+
+        catch (InvalidParameteresException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid query params");
+        }
+        catch (Exception ex)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
         }
     }
 
@@ -71,17 +94,49 @@ public class ReportController {
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/reports", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetReportsResponse> getAllReports()
+    public ResponseEntity<GetReportsResponse> getAllReports(@RequestParam Map<String, String> allParams)
     {
+
         try{
 
-            List<ReportData> toBeReturned = reportService.getAllReports().stream().map(ReportData::new).collect(Collectors.toList());
+            if(allParams.isEmpty()) {
+                List<ReportData> toBeReturned = reportService.getAllReports().stream().map(ReportData::new).collect(Collectors.toList());
 
-            return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+                return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+            }
+
+            if(allParams.containsKey("reason") && allParams.containsKey("date"))
+            {
+                List<ReportData> toBeReturned = reportService.getAllReportsByReasonAndDay(ReportReason.fromString(allParams.get("reason")), allParams.get("date")).stream().map(ReportData::new).collect(Collectors.toList());
+                return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+
+            }
+
+            if(allParams.containsKey("reason"))
+            {
+                List<ReportData> toBeReturned = reportService.getAllReportsByReason(ReportReason.fromString(allParams.get("reason"))).stream().map(ReportData::new).collect(Collectors.toList());
+
+                return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+            }
+
+            if(allParams.containsKey("date"))
+            {
+                List<ReportData> toBeReturned = reportService.getALlReportsFromTimestamp(allParams.get("date")).stream().map(ReportData::new).collect(Collectors.toList());
+
+                return new ResponseEntity<GetReportsResponse>(new GetReportsResponse(toBeReturned), HttpStatus.OK);
+            }
+
+            throw new InvalidParameteresException();
         }
+
+        catch (InvalidParameteresException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid parameters");
+        }
+
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server pl erorr");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server erorr");
         }
     }
 
